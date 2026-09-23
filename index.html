@@ -15,16 +15,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      /* Fondo exterior desenfocado con tono oscuro de barbería */
-      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-                  url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=1000') center/cover no-repeat fixed;
+      background: #f4f6f9;
     }
 
     .card { 
       background: #ffffff; 
       padding: 24px 20px; 
       border-radius: 16px; 
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
       width: 100%;
       max-width: 420px;
     }
@@ -51,47 +49,33 @@
       margin: 25px 0 30px 0; 
     }
     
-    /* Botones circulares en 3D con degradado suave */
+    /* Botones circulares con símbolos en blanco puro */
     .btn-qty { 
-      width: 52px; 
-      height: 52px; 
-      color: white; 
+      width: 50px; 
+      height: 50px; 
+      color: #ffffff !important; 
       border: none; 
       border-radius: 50%; 
-      font-size: 26px; 
+      font-size: 28px; 
       font-weight: bold; 
+      line-height: 1;
       cursor: pointer; 
       display: flex; 
       align-items: center; 
       justify-content: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
-    .btn-qty:active {
-      transform: scale(0.95);
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
+    .btn-qty:active { transform: scale(0.95); }
     
-    /* Menos (Rojo Degradado) */
-    .btn-restar { 
-      background: linear-gradient(135deg, #bd3a3a 0%, #8b1e1e 100%); 
-    }
-
-    /* Más (Verde Degradado) */
-    .btn-sumar { 
-      background: linear-gradient(135deg, #519e54 0%, #2e6931 100%); 
-    }
+    .btn-restar { background-color: #d32f2f; }
+    .btn-sumar { background-color: #2e7d32; }
 
     .qty-display { font-size: 22px; font-weight: bold; width: 35px; text-align: center; color: #111; }
 
-    /* Caja de Pago Móvil con bordes punteados y fondo de textura tenue */
     .pago-box { 
-      position: relative;
       margin-top: 10px; 
       padding: 18px 16px; 
       background-color: #f7fbff;
-      /* Marca de agua tenue del poste de barbería */
-      background-image: radial-gradient(circle, rgba(0,102,204,0.03) 0%, transparent 70%);
       border: 1px dashed #a0b2c6; 
       border-radius: 10px; 
     }
@@ -105,26 +89,21 @@
     }
     .pago-datos p { margin: 10px 0; font-size: 15px; color: #222; }
 
-    /* Botón Copiar con degradado azul estilo botón metálico */
     .btn-copiar { 
       display: block; 
       width: 100%; 
       margin-top: 18px; 
       padding: 14px; 
-      background: linear-gradient(180deg, #1d6fa5 0%, #124d77 100%); 
+      background-color: #0066cc; 
       color: white; 
       border: none; 
-      border-radius: 10px; 
+      border-radius: 8px; 
       font-size: 16px; 
       font-weight: bold; 
       cursor: pointer; 
       text-align: center; 
-      box-shadow: 0 4px 8px rgba(18, 77, 119, 0.3);
-      transition: background 0.2s ease;
     }
-    .btn-copiar:active { 
-      background: linear-gradient(180deg, #15547e 0%, #0d3857 100%); 
-    }
+    .btn-copiar:active { background-color: #004c99; }
     
     .mensaje-copiado { 
       display: none; 
@@ -150,7 +129,7 @@
 
   <!-- Selector de Cantidad -->
   <div class="contador-container">
-    <button class="btn-qty btn-restar" onclick="cambiarCantidad(-1)">−</button>
+    <button class="btn-qty btn-restar" onclick="cambiarCantidad(-1)">-</button>
     <span class="qty-display" id="cantidad">1</span>
     <button class="btn-qty btn-sumar" onclick="cambiarCantidad(1)">+</button>
   </div>
