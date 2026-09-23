@@ -15,8 +15,17 @@
     .servicio-header p { margin: 5px 0 0 0; color: #666; font-size: 14px; }
 
     .contador-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 20px 0; }
-    .btn-qty { width: 45px; height: 45px; background: #0066cc; color: white; border: none; border-radius: 50%; font-size: 22px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .btn-qty:active { background: #004c99; }
+    
+    .btn-qty { width: 45px; height: 45px; color: white; border: none; border-radius: 50%; font-size: 22px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    
+    /* Botón Menos (Rojo) */
+    .btn-restar { background: #d32f2f; }
+    .btn-restar:active { background: #9a0007; }
+
+    /* Botón Más (Verde) */
+    .btn-sumar { background: #2e7d32; }
+    .btn-sumar:active { background: #005005; }
+
     .qty-display { font-size: 22px; font-weight: bold; width: 40px; text-align: center; }
 
     .pago-box { margin-top: 20px; padding: 15px; background: #f0f7ff; border: 1px dashed #0066cc; border-radius: 8px; }
@@ -40,11 +49,11 @@
     <p>Precio base: <strong>3.40 $</strong> por corte</p>
   </div>
 
-  <!-- Selector de Cantidad -->
+  <!-- Selector de Cantidad con botones rojo/verde -->
   <div class="contador-container">
-    <button class="btn-qty" onclick="cambiarCantidad(-1)">➖</button>
+    <button class="btn-qty btn-restar" onclick="cambiarCantidad(-1)">➖</button>
     <span class="qty-display" id="cantidad">1</span>
-    <button class="btn-qty" onclick="cambiarCantidad(1)">➕</button>
+    <button class="btn-qty btn-sumar" onclick="cambiarCantidad(1)">➕</button>
   </div>
 
   <!-- Datos para Pago Móvil -->
@@ -68,7 +77,6 @@
   let cantidadCortes = 1;
 
   async function obtenerTasa() {
-    // Lista de APIs con sus respectivas rutas para parsear el precio BCV
     const fuentes = [
       {
         url: "https://ve.dolarapi.com/v1/dolares/oficial",
@@ -95,14 +103,13 @@
           tasaGlobal = valorTasa;
           document.getElementById("tasa-bcv").innerText = `${tasaGlobal.toFixed(2)} Bs./USD`;
           calcularMontoTotal();
-          return; // Éxito, salir de la función
+          return;
         }
       } catch (err) {
-        console.warn(`Falló fuente ${fuente.url}, intentando siguiente...`);
+        console.warn(`Falló fuente ${fuente.url}`);
       }
     }
 
-    // Si todas las APIs fallan
     document.getElementById("tasa-bcv").innerText = "Error de red";
   }
 
@@ -140,97 +147,6 @@
     });
   }
 
-  obtenerTasa();
-</script>
-
-</body>
-</html>
-
-  <div class="servicio-header">
-    <h2>Corte de Cabello</h2>
-    <p>Precio base: <strong>3.40 $</strong> por corte</p>
-  </div>
-
-  <!-- Selector de Cantidad -->
-  <div class="contador-container">
-    <button class="btn-qty" onclick="cambiarCantidad(-1)">➖</button>
-    <span class="qty-display" id="cantidad">1</span>
-    <button class="btn-qty" onclick="cambiarCantidad(1)">➕</button>
-  </div>
-
-  <!-- Datos para Pago Móvil -->
-  <div class="pago-box">
-    <h3>Datos para Pago Móvil</h3>
-    <div class="pago-datos">
-      <p><strong>Banco:</strong> <span id="datos-banco">0102 (BDV)</span></p>
-      <p><strong>Cédula:</strong> <span id="datos-cedula">25400702</span></p>
-      <p><strong>Teléfono:</strong> <span id="datos-telefono">04127472727</span></p>
-      <p><strong>Monto total:</strong> <span id="datos-monto-final" style="font-weight: bold; color: #2e7d32;">0.00 Bs.</span></p>
-    </div>
-
-    <button class="btn-copiar" onclick="copiarDatosPago()">Copiar datos de pago</button>
-    <div id="mensaje" class="mensaje-copiado">¡Datos copiados al portapapeles!</div>
-  </div>
-</div>
-
-<script>
-  const API_URL = "https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=bcv";
-  const PRECIO_UNITARIO_USD = 3.40;
-  let tasaGlobal = 0;
-  let cantidadCortes = 1;
-
-  async function obtenerTasa() {
-    try {
-      const response = await fetch(API_URL);
-      const data = await response.json();
-      tasaGlobal = parseFloat(data.monedas.usd.promedio);
-
-      document.getElementById("tasa-bcv").innerText = `${tasaGlobal.toFixed(2)} Bs./USD`;
-
-      // Calcular monto con la tasa actual
-      calcularMontoTotal();
-    } catch (error) {
-      console.error("Error al obtener la tasa:", error);
-      document.getElementById("tasa-bcv").innerText = "Error al cargar la tasa";
-    }
-  }
-
-  function cambiarCantidad(cambio) {
-    cantidadCortes += cambio;
-    if (cantidadCortes < 1) cantidadCortes = 1; // Mínimo 1 corte
-    
-    document.getElementById("cantidad").innerText = cantidadCortes;
-    calcularMontoTotal();
-  }
-
-  function calcularMontoTotal() {
-    if (tasaGlobal === 0) return;
-    
-    const totalUSD = cantidadCortes * PRECIO_UNITARIO_USD;
-    const totalBs = (totalUSD * tasaGlobal).toFixed(2);
-
-    document.getElementById("datos-monto-final").innerText = `${totalBs} Bs.`;
-  }
-
-  function copiarDatosPago() {
-    const banco = document.getElementById("datos-banco").innerText;
-    const cedula = document.getElementById("datos-cedula").innerText;
-    const telefono = document.getElementById("datos-telefono").innerText;
-    const monto = document.getElementById("datos-monto-final").innerText;
-
-    // Texto exacto que se copia
-    const textoACopiar = `Datos de Pago Móvil:\nBanco: ${banco}\nCédula: ${cedula}\nTeléfono: ${telefono}\nMonto: ${monto}`;
-
-    navigator.clipboard.writeText(textoACopiar).then(() => {
-      const msj = document.getElementById("mensaje");
-      msj.style.display = "block";
-      setTimeout(() => { msj.style.display = "none"; }, 3000);
-    }).catch(err => {
-      console.error("Error al copiar: ", err);
-    });
-  }
-
-  // Cargar tasa al inicio
   obtenerTasa();
 </script>
 
