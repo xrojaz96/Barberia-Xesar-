@@ -214,7 +214,8 @@
     const telefono = document.getElementById("datos-telefono").innerText;
     const monto = document.getElementById("datos-monto-final").innerText;
 
-    const textoACopiar = `Datos de Pago Móvil:\nBanco: ${banco}\nCédula: ${cedula}\nTeléfono: ${telefono}\nMonto: ${monto}`;
+    // Formato limpio: solo los valores línea por línea
+    const textoACopiar = `${banco}\n${cedula}\n${telefono}\n${monto}`;
 
     navigator.clipboard.writeText(textoACopiar).then(() => {
       const msj = document.getElementById("mensaje");
@@ -229,4 +230,5 @@
 </script>
 
 </body>
-</html>
+    </html>
+    
