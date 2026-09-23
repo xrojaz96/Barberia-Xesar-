@@ -5,43 +5,142 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pago de Barbería - Tasa BCV</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; max-width: 450px; margin: auto; background-color: #f4f6f9; }
-    .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    * { box-sizing: border-box; }
     
-    .tasa-box { background: #eef2f5; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 20px; font-size: 15px; color: #333; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      padding: 20px 15px; 
+      margin: 0; 
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* Fondo exterior desenfocado con tono oscuro de barbería */
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                  url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=1000') center/cover no-repeat fixed;
+    }
+
+    .card { 
+      background: #ffffff; 
+      padding: 24px 20px; 
+      border-radius: 16px; 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
+      width: 100%;
+      max-width: 420px;
+    }
     
-    .servicio-header { text-align: center; margin-bottom: 15px; }
-    .servicio-header h2 { margin: 0; font-size: 20px; color: #222; }
-    .servicio-header p { margin: 5px 0 0 0; color: #666; font-size: 14px; }
-
-    .contador-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 20px 0; }
+    .tasa-box { 
+      background: #f1f3f5; 
+      padding: 14px; 
+      border-radius: 8px; 
+      text-align: center; 
+      font-size: 15px; 
+      color: #333333; 
+      margin-bottom: 22px;
+    }
     
-    .btn-qty { width: 45px; height: 45px; color: white; border: none; border-radius: 50%; font-size: 22px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .servicio-header { text-align: center; margin-bottom: 20px; }
+    .servicio-header h2 { margin: 0; font-size: 22px; font-weight: 700; color: #111111; }
+    .servicio-header p { margin: 6px 0 0 0; color: #555555; font-size: 15px; }
+
+    .contador-container { 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 20px; 
+      margin: 25px 0 30px 0; 
+    }
     
-    /* Botón Menos (Rojo) */
-    .btn-restar { background: #d32f2f; }
-    .btn-restar:active { background: #9a0007; }
+    /* Botones circulares en 3D con degradado suave */
+    .btn-qty { 
+      width: 52px; 
+      height: 52px; 
+      color: white; 
+      border: none; 
+      border-radius: 50%; 
+      font-size: 26px; 
+      font-weight: bold; 
+      cursor: pointer; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .btn-qty:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Menos (Rojo Degradado) */
+    .btn-restar { 
+      background: linear-gradient(135deg, #bd3a3a 0%, #8b1e1e 100%); 
+    }
 
-    /* Botón Más (Verde) */
-    .btn-sumar { background: #2e7d32; }
-    .btn-sumar:active { background: #005005; }
+    /* Más (Verde Degradado) */
+    .btn-sumar { 
+      background: linear-gradient(135deg, #519e54 0%, #2e6931 100%); 
+    }
 
-    .qty-display { font-size: 22px; font-weight: bold; width: 40px; text-align: center; }
+    .qty-display { font-size: 22px; font-weight: bold; width: 35px; text-align: center; color: #111; }
 
-    .pago-box { margin-top: 20px; padding: 15px; background: #f0f7ff; border: 1px dashed #0066cc; border-radius: 8px; }
-    .pago-box h3 { margin-top: 0; font-size: 16px; color: #0066cc; text-align: center; margin-bottom: 12px; }
-    .pago-datos p { margin: 8px 0; font-size: 15px; }
+    /* Caja de Pago Móvil con bordes punteados y fondo de textura tenue */
+    .pago-box { 
+      position: relative;
+      margin-top: 10px; 
+      padding: 18px 16px; 
+      background-color: #f7fbff;
+      /* Marca de agua tenue del poste de barbería */
+      background-image: radial-gradient(circle, rgba(0,102,204,0.03) 0%, transparent 70%);
+      border: 1px dashed #a0b2c6; 
+      border-radius: 10px; 
+    }
+    .pago-box h3 { 
+      margin-top: 0; 
+      font-size: 16px; 
+      color: #0d4b82; 
+      text-align: center; 
+      margin-bottom: 14px; 
+      font-weight: 700;
+    }
+    .pago-datos p { margin: 10px 0; font-size: 15px; color: #222; }
 
-    .btn-copiar { display: block; width: 100%; margin-top: 15px; padding: 14px; background: #0066cc; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; }
-    .btn-copiar:active { background: #004c99; }
-    .mensaje-copiado { display: none; color: #2e7d32; text-align: center; font-size: 14px; margin-top: 10px; font-weight: bold; }
+    /* Botón Copiar con degradado azul estilo botón metálico */
+    .btn-copiar { 
+      display: block; 
+      width: 100%; 
+      margin-top: 18px; 
+      padding: 14px; 
+      background: linear-gradient(180deg, #1d6fa5 0%, #124d77 100%); 
+      color: white; 
+      border: none; 
+      border-radius: 10px; 
+      font-size: 16px; 
+      font-weight: bold; 
+      cursor: pointer; 
+      text-align: center; 
+      box-shadow: 0 4px 8px rgba(18, 77, 119, 0.3);
+      transition: background 0.2s ease;
+    }
+    .btn-copiar:active { 
+      background: linear-gradient(180deg, #15547e 0%, #0d3857 100%); 
+    }
+    
+    .mensaje-copiado { 
+      display: none; 
+      color: #2e7d32; 
+      text-align: center; 
+      font-size: 14px; 
+      margin-top: 10px; 
+      font-weight: bold; 
+    }
   </style>
 </head>
 <body>
 
 <div class="card">
   <div class="tasa-box">
-    Tasa Oficial BCV: <span id="tasa-bcv">Cargando...</span>
+    Tasa Oficial BCV: <strong id="tasa-bcv">Cargando...</strong>
   </div>
 
   <div class="servicio-header">
@@ -49,11 +148,11 @@
     <p>Precio base: <strong>3.40 $</strong> por corte</p>
   </div>
 
-  <!-- Selector de Cantidad con botones rojo/verde -->
+  <!-- Selector de Cantidad -->
   <div class="contador-container">
-    <button class="btn-qty btn-restar" onclick="cambiarCantidad(-1)">➖</button>
+    <button class="btn-qty btn-restar" onclick="cambiarCantidad(-1)">−</button>
     <span class="qty-display" id="cantidad">1</span>
-    <button class="btn-qty btn-sumar" onclick="cambiarCantidad(1)">➕</button>
+    <button class="btn-qty btn-sumar" onclick="cambiarCantidad(1)">+</button>
   </div>
 
   <!-- Datos para Pago Móvil -->
