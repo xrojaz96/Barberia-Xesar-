@@ -32,10 +32,13 @@
       padding: 14px; 
       border-radius: 8px; 
       text-align: center; 
-      font-size: 15px; 
+      font-size: 14px; 
       color: #333333; 
       margin-bottom: 22px;
+      line-height: 1.4;
     }
+    .tasa-box strong { font-size: 15px; }
+    .tasa-fecha { display: block; font-size: 12px; color: #666; margin-top: 4px; }
     
     .servicio-header { text-align: center; margin-bottom: 20px; }
     .servicio-header h2 { margin: 0; font-size: 22px; font-weight: 700; color: #111111; }
@@ -49,7 +52,6 @@
       margin: 25px 0 30px 0; 
     }
     
-    /* Botones circulares con símbolos en blanco puro */
     .btn-qty { 
       width: 50px; 
       height: 50px; 
@@ -119,7 +121,8 @@
 
 <div class="card">
   <div class="tasa-box">
-    Tasa Oficial BCV: <strong id="tasa-bcv">Cargando...</strong>
+    Tasa BCV: <strong id="tasa-bcv">Cargando...</strong>
+    <span class="tasa-fecha" id="tasa-fecha"></span>
   </div>
 
   <div class="servicio-header">
@@ -158,15 +161,17 @@
     const fuentes = [
       {
         url: "https://ve.dolarapi.com/v1/dolares/oficial",
-        extraer: (data) => parseFloat(data.promedio)
+        extraer: (data) => ({
+          promedio: parseFloat(data.promedio),
+          fecha: data.fechaActualizacion ? new Date(data.fechaActualizacion).toLocaleDateString("es-VE") : null
+        })
       },
       {
         url: "https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=bcv",
-        extraer: (data) => parseFloat(data.monedas.usd.promedio)
-      },
-      {
-        url: "https://pydolarvenezuela-api.vercel.app/api/v1/dollar/unit/bcv",
-        extraer: (data) => parseFloat(data.price)
+        extraer: (data) => ({
+          promedio: parseFloat(data.monedas.usd.promedio),
+          fecha: data.monedas.usd.fechaActualizacion || null
+        })
       }
     ];
 
@@ -175,11 +180,23 @@
         const res = await fetch(fuente.url);
         if (!res.ok) continue;
         const data = await res.json();
-        const valorTasa = fuente.extraer(data);
+        const resultado = fuente.extraer(data);
 
-        if (valorTasa && !isNaN(valorTasa) && valorTasa > 0) {
-          tasaGlobal = valorTasa;
+        if (resultado.promedio && !isNaN(resultado.promedio) && resultado.promedio > 0) {
+          tasaGlobal = resultado.promedio;
           document.getElementById("tasa-bcv").innerText = `${tasaGlobal.toFixed(2)} Bs./USD`;
+
+          // Verificar si hoy es fin de semana (Sábado = 6, Domingo = 0)
+          const hoy = new Date();
+          const diaSemana = hoy.getDay();
+          const esFinDeSemana = (diaSemana === 0 || diaSemana === 6);
+
+          let textoFecha = resultado.fecha ? `Fecha: ${resultado.fecha}` : `Fecha: ${hoy.toLocaleDateString("es-VE")}`;
+          if (esFinDeSemana) {
+            textoFecha += " (Tasa Lunes)";
+          }
+
+          document.getElementById("tasa-fecha").innerText = textoFecha;
           calcularMontoTotal();
           return;
         }
@@ -214,7 +231,6 @@
     const telefono = document.getElementById("datos-telefono").innerText;
     const monto = document.getElementById("datos-monto-final").innerText;
 
-    // Formato limpio: solo los valores línea por línea
     const textoACopiar = `${banco}\n${cedula}\n${telefono}\n${monto}`;
 
     navigator.clipboard.writeText(textoACopiar).then(() => {
@@ -230,5 +246,4 @@
 </script>
 
 </body>
-    </html>
-    
+</html>
