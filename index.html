@@ -161,16 +161,26 @@
     const fuentes = [
       {
         url: "https://ve.dolarapi.com/v1/dolares/oficial",
-        extraer: (data) => ({
-          promedio: parseFloat(data.promedio),
-          fecha: data.fechaActualizacion ? new Date(data.fechaActualizacion).toLocaleDateString("es-VE") : null
-        })
+        extraer: (data) => {
+          let fechaObj = data.fechaActualizacion ? new Date(data.fechaActualizacion) : new Date();
+          return {
+            promedio: parseFloat(data.promedio),
+            fechaHora: fechaObj.toLocaleString("es-VE", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true
+            })
+          };
+        }
       },
       {
         url: "https://pydolarvenezuela-api.vercel.app/api/v1/dollar?page=bcv",
         extraer: (data) => ({
           promedio: parseFloat(data.monedas.usd.promedio),
-          fecha: data.monedas.usd.fechaActualizacion || null
+          fechaHora: data.monedas.usd.fechaActualizacion || new Date().toLocaleString("es-VE")
         })
       }
     ];
@@ -186,12 +196,11 @@
           tasaGlobal = resultado.promedio;
           document.getElementById("tasa-bcv").innerText = `${tasaGlobal.toFixed(2)} Bs./USD`;
 
-          // Verificar si hoy es fin de semana (Sábado = 6, Domingo = 0)
           const hoy = new Date();
           const diaSemana = hoy.getDay();
           const esFinDeSemana = (diaSemana === 0 || diaSemana === 6);
 
-          let textoFecha = resultado.fecha ? `Fecha: ${resultado.fecha}` : `Fecha: ${hoy.toLocaleDateString("es-VE")}`;
+          let textoFecha = `Actualizado: ${resultado.fechaHora}`;
           if (esFinDeSemana) {
             textoFecha += " (Tasa Lunes)";
           }
